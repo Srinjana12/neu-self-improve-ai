@@ -151,13 +151,11 @@ Policy iteration converged in 2 iterations, indicating fast and stable convergen
 
 # Results
 
-# Optimal first room to search: Storage
+**Optimal first room to search:** Storage  
 
-# Expected total search cost: 1.0
+**Expected total search cost:** 1.0  
 
-
-
-# Optimal Search Order
+**Optimal Search Order**
 
 1) Storage
 
