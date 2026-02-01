@@ -150,15 +150,14 @@ Policy evaluation and policy improvement are repeated until the policy no longer
 Policy iteration converged in 2 iterations, indicating fast and stable convergence for this finite belief-state MDP.
 
 # Results
-** Optimal first room to search **
 
-** Storage **
+# Optimal first room to search: Storage
 
-** Expected total search cost **
+# Expected total search cost: 1.0
 
-** 1.0 **
 
-** Optimal Search Order **
+
+# Optimal Search Order
 
 1) Storage
 
