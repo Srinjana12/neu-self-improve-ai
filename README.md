@@ -116,16 +116,14 @@ The process terminates once the target is found, and there is no need to discoun
 The MDP is solved using policy iteration, which alternates between:
 
 **Policy Evaluation**
+
 $$
 V^\pi(s) =
 R(s, \pi(s)) +
 \gamma \sum_{s'} P(s' \mid s, \pi(s)) V^\pi(s')
 $$
 
-
-This equation is solved iteratively to compute the expected total cost (or reward) when following policy 
-𝜋
-π.
+This equation is solved iteratively to compute the expected total cost (or reward) when following policy \( \pi \).
 
 **Policy Improvement**
 
@@ -140,7 +138,6 @@ R(s,a) +
 \right]
 $$
 
-
 Each state selects the action that maximizes the expected value.
 
 **Convergence**
@@ -148,6 +145,7 @@ Each state selects the action that maximizes the expected value.
 Policy evaluation and policy improvement are repeated until the policy no longer changes.
 
 Policy iteration converged in 2 iterations, indicating fast and stable convergence for this finite belief-state MDP.
+
 
 # Results
 
