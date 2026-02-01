@@ -1,4 +1,4 @@
-# 1. Problem Description and Motivation
+# Problem Description and Motivation
 
 This project models a robot searching rooms in a building to locate a target while minimizing expected total search cost.
 The robot does not know the target’s location and instead maintains a probability-based belief over all rooms, which is updated after each search.
