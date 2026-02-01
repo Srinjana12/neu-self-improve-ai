@@ -115,7 +115,7 @@ The process terminates once the target is found, and there is no need to discoun
 
 The MDP is solved using policy iteration, which alternates between:
 
-# Policy Evaluation
+**Policy Evaluation**
 $$
 V^\pi(s) =
 R(s, \pi(s)) +
@@ -127,7 +127,7 @@ This equation is solved iteratively to compute the expected total cost (or rewar
 𝜋
 π.
 
-# Policy Improvement
+**Policy Improvement**
 
 Using the evaluated value function, the policy is updated greedily:
 
@@ -143,7 +143,7 @@ $$
 
 Each state selects the action that maximizes the expected value.
 
-# Convergence
+**Convergence**
 
 Policy evaluation and policy improvement are repeated until the policy no longer changes.
 
