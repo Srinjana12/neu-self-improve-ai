@@ -123,7 +123,7 @@ R(s, \pi(s)) +
 \gamma \sum_{s'} P(s' \mid s, \pi(s)) V^\pi(s')
 $$
 
-This equation is solved iteratively to compute the expected total cost (or reward) when following policy \( \pi \).
+This equation is solved iteratively to compute the expected total cost (or reward) when following policy $ \pi $.
 
 **Policy Improvement**
 
