@@ -5,7 +5,7 @@ The robot does not know the target’s location and instead maintains a probabil
 
 The problem is formulated as a Markov Decision Process (MDP) and solved using policy iteration.
 
-# Problem Description
+# Problem Overview
 
 1) The robot chooses one room to search at each step
 
