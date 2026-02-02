@@ -74,8 +74,6 @@ $$
 The goal is to find an optimal policy 
 𝜋
 ∗
-π
-∗
  that minimizes the expected total search cost incurred until the target is found:
 
 $$
