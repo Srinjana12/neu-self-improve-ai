@@ -30,13 +30,10 @@ $$
 where 
 𝑝
 𝑖
-p
-i
 	​
 
  is the probability that the target is in room 
-𝑖
-i.
+𝑖.
 The belief space is discretized using a step size of 0.1 to obtain a finite MDP.
 
 # Action Space
@@ -48,13 +45,11 @@ $$
 
 If room 
 𝑖
-i is searched:
+is searched:
 
 1) The target is found with probability 
 𝑝
 𝑖
-p
-i
 	​
 
  (terminal state).
