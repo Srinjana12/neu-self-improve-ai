@@ -33,7 +33,13 @@ class BaselineAgent:
         load_dotenv(override=True)  # Force reload to get latest API key
         self.config = config
         self.db = db_manager
-        self.client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+        api_key = os.getenv("OPENAI_API_KEY")
+        if not api_key:
+            raise ValueError(
+                "OPENAI_API_KEY is not set. Create/update .env with OPENAI_API_KEY=... "
+                "or export it in your shell."
+            )
+        self.client = openai.OpenAI(api_key=api_key)
         
     def solve_instance(self, instance: Dict[str, Any], 
                        repo_path: str) -> Dict[str, Any]:
@@ -141,21 +147,22 @@ class BaselineAgent:
         final_patch = repo_tools.get_patch()
         
         # Update trajectory in database
+        patch_generated = bool(final_patch)
         self.db.update_trajectory(
             trajectory_id=trajectory_id,
             total_actions=len(trajectory),
-            success=1 if final_patch else 0,
+            success=1 if patch_generated else 0,
             final_patch=final_patch
         )
         
         print(f"\n{'='*60}")
         print(f"Completed in {len(trajectory)} steps")
-        print(f"Patch generated: {bool(final_patch)}")
+        print(f"Patch generated: {patch_generated}")
         print(f"{'='*60}")
         
         return {
             'instance_id': instance_id,
-            'success': bool(final_patch),
+            'success': patch_generated,
             'patch': final_patch,
             'trajectory': trajectory,
             'trajectory_id': trajectory_id
@@ -170,7 +177,7 @@ Your goal is to:
 2. Explore the repository to locate relevant code
 3. Identify the root cause of the bug
 4. Implement a fix by editing the appropriate files
-5. Verify your fix makes sense
+5. Verify your fix by running tests when possible
 
 {tool_executor.format_tools_description()}
 
@@ -178,14 +185,15 @@ Workflow:
 1. Start by searching for relevant code using search_code or list_files
 2. Read files to understand the implementation
 3. Make targeted edits to fix the bug
-4. Use get_diff to review your changes
-5. When done, say "COMPLETE" to finish
+4. Use run_tests to validate your fix and inspect failures if any
+5. Use get_diff to review your changes
+6. Only after validation, say "COMPLETE" to finish
 
 Important:
 - Be systematic and thorough in your exploration
 - Make minimal, targeted changes
 - Ensure your edits follow the existing code style
-- Test your reasoning before making changes
+- Prefer running targeted tests before declaring completion
 
 When you're confident you've fixed the bug, respond with just: COMPLETE
 """
@@ -212,7 +220,7 @@ When you're confident you've fixed the bug, respond with just: COMPLETE
         """Parse agent message and execute tool if present."""
         # Look for tool call pattern
         tool_pattern = r'TOOL:\s*(\w+)'
-        args_pattern = r'ARGS:\s*({[^}]+})'
+        args_pattern = r'ARGS:\s*(\{.*\})'
         
         tool_match = re.search(tool_pattern, message)
         
@@ -226,7 +234,7 @@ When you're confident you've fixed the bug, respond with just: COMPLETE
         
         if args_match:
             try:
-                args = json.loads(args_match.group(1))
+                args = json.loads(args_match.group(1).strip())
             except json.JSONDecodeError:
                 print(f"✗ Failed to parse tool arguments")
                 return {
@@ -292,6 +300,11 @@ def run_baseline_agent(instance_id: Optional[str] = None,
                 return
         else:
             instances = db.get_all_instances(limit=limit)
+
+        if not instances:
+            print("No instances found in database.")
+            print("Run `python3 load_data.py` first to populate `swe_bench.db`.")
+            return
         
         print(f"\nRunning baseline agent on {len(instances)} instances")
         print(f"Model: {model}")
@@ -319,7 +332,10 @@ def run_baseline_agent(instance_id: Optional[str] = None,
                 trajectory_id=result['trajectory_id'],
                 model_name=model,
                 resolved=result['success'],
-                test_results="Patch generated" if result['success'] else "No patch"
+                test_results=(
+                    "Legacy metric (patch-generated). "
+                    "Run `python -m eval.run ...` for test-based resolved/pass@1."
+                )
             )
         
         # Print summary

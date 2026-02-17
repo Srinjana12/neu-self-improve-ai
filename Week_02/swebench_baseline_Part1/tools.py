@@ -211,6 +211,45 @@ class RepositoryTools:
         except Exception:
             return ""
 
+    def run_tests(
+        self,
+        command: str = "python3 -m pytest -q",
+        timeout_seconds: int = 300,
+        max_output_chars: int = 12000,
+    ) -> ToolResult:
+        """Run tests in repository with timeout and bounded output."""
+        try:
+            completed = subprocess.run(
+                command,
+                cwd=self.repo_path,
+                shell=True,
+                capture_output=True,
+                text=True,
+                timeout=timeout_seconds,
+            )
+            output = (
+                f"Command: {command}\n"
+                f"Exit code: {completed.returncode}\n\n"
+                f"STDOUT:\n{completed.stdout}\n\n"
+                f"STDERR:\n{completed.stderr}\n"
+            )
+            if len(output) > max_output_chars:
+                output = output[:max_output_chars] + "\n[output truncated]"
+            return ToolResult(success=True, output=output)
+        except subprocess.TimeoutExpired as exc:
+            output = (
+                f"Command: {command}\n"
+                f"Exit code: 124\n"
+                f"Error: Timeout after {timeout_seconds} seconds\n\n"
+                f"STDOUT:\n{exc.stdout or ''}\n\n"
+                f"STDERR:\n{exc.stderr or ''}\n"
+            )
+            if len(output) > max_output_chars:
+                output = output[:max_output_chars] + "\n[output truncated]"
+            return ToolResult(success=False, output=output, error="Test command timed out")
+        except Exception as e:
+            return ToolResult(success=False, output="", error=str(e))
+
 
 class ToolExecutor:
     """Executes tools and formats results."""
@@ -225,6 +264,7 @@ class ToolExecutor:
             'edit_file': self.repo_tools.edit_file,
             'create_file': self.repo_tools.create_file,
             'get_diff': self.repo_tools.get_diff,
+            'run_tests': self.repo_tools.run_tests,
         }
     
     def execute(self, tool_name: str, **kwargs) -> ToolResult:
@@ -266,6 +306,10 @@ class ToolExecutor:
 7. get_diff()
    - Get git diff of current changes
    - Returns unified diff format
+
+8. run_tests(command: str = "python3 -m pytest -q", timeout_seconds: int = 300, max_output_chars: int = 12000)
+   - Run tests in the repository
+   - Returns exit code and captured logs
 
 To use a tool, respond with:
 TOOL: tool_name

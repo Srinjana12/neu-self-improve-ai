@@ -99,6 +99,27 @@ class DatabaseManager:
             FOREIGN KEY (trajectory_id) REFERENCES agent_trajectories(trajectory_id)
         )
         """)
+
+        # Test-based evaluation runs table (SWE-bench-style semantics)
+        cursor.execute("""
+        CREATE TABLE IF NOT EXISTS evaluation_runs (
+            eval_run_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            eval_run_name TEXT NOT NULL,
+            instance_id TEXT NOT NULL,
+            repo TEXT NOT NULL,
+            base_commit TEXT NOT NULL,
+            patch_path TEXT,
+            tests_command TEXT,
+            tests_exit_code INTEGER,
+            resolved INTEGER DEFAULT 0,
+            patch_generated INTEGER DEFAULT 0,
+            runtime_seconds REAL,
+            error_type TEXT,
+            logs_path TEXT,
+            created_at TEXT NOT NULL,
+            FOREIGN KEY (instance_id) REFERENCES swe_bench_instances(instance_id)
+        )
+        """)
         
         # Repository cache table
         cursor.execute("""
@@ -253,7 +274,14 @@ class DatabaseManager:
         # Resolved instances
         cursor.execute("SELECT COUNT(*) FROM evaluation_results WHERE resolved = 1")
         stats['resolved_instances'] = cursor.fetchone()[0]
-        
+
+        # Test-based evaluation stats
+        cursor.execute("SELECT COUNT(*) FROM evaluation_runs")
+        stats['total_test_evaluations'] = cursor.fetchone()[0]
+
+        cursor.execute("SELECT COUNT(*) FROM evaluation_runs WHERE resolved = 1")
+        stats['resolved_test_evaluations'] = cursor.fetchone()[0]
+
         return stats
         
     def cache_file(self, instance_id: str, file_path: str, 
@@ -279,3 +307,44 @@ class DatabaseManager:
         
         row = cursor.fetchone()
         return row[0] if row else None
+
+    def save_eval_run(
+        self,
+        eval_run_name: str,
+        instance_id: str,
+        repo: str,
+        base_commit: str,
+        patch_path: str,
+        tests_command: str,
+        tests_exit_code: Optional[int],
+        resolved: int,
+        patch_generated: int,
+        runtime_seconds: float,
+        error_type: str,
+        logs_path: str,
+    ):
+        """Persist one test-based evaluation result row."""
+        cursor = self.conn.cursor()
+        cursor.execute("""
+        INSERT INTO evaluation_runs (
+            eval_run_name, instance_id, repo, base_commit, patch_path,
+            tests_command, tests_exit_code, resolved, patch_generated,
+            runtime_seconds, error_type, logs_path, created_at
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (
+            eval_run_name,
+            instance_id,
+            repo,
+            base_commit,
+            patch_path,
+            tests_command,
+            tests_exit_code,
+            resolved,
+            patch_generated,
+            runtime_seconds,
+            error_type,
+            logs_path,
+            datetime.now().isoformat(),
+        ))
+        self.conn.commit()

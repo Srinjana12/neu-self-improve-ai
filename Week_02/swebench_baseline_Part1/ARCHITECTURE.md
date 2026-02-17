@@ -278,29 +278,29 @@ All state stored in SQLite:
 ## Design Decisions
 
 ### Why SQLite?
-- ✅ Single file database (easy to manage)
-- ✅ No server required (zero setup)
-- ✅ ACID transactions (data safety)
-- ✅ SQL queries (powerful analysis)
-- ✅ Python stdlib (no dependencies)
+-  Single file database (easy to manage)
+-  No server required (zero setup)
+-  ACID transactions (data safety)
+-  SQL queries (powerful analysis)
+-  Python stdlib (no dependencies)
 
 ### Why Sequential Agent?
-- ✅ Matches paper baseline (Moatless-Adapted)
-- ✅ Simpler than MCTS (baseline requirement)
-- ✅ Easier to debug and understand
-- ✅ Sufficient for baseline performance
+-  Matches paper baseline (Moatless-Adapted)
+-  Simpler than MCTS (baseline requirement)
+-  Easier to debug and understand
+-  Sufficient for baseline performance
 
 ### Why Tool-Based?
-- ✅ Clear action boundaries
-- ✅ Easy to log and replay
-- ✅ LLM-friendly interface
-- ✅ Extensible (can add new tools)
+-  Clear action boundaries
+-  Easy to log and replay
+-  LLM-friendly interface
+-  Extensible (can add new tools)
 
 ### Why No Frameworks?
-- ✅ Assignment requirement (minimal dependencies)
-- ✅ Full control over implementation
-- ✅ Easier to understand and modify
-- ✅ No black-box behavior
+-  Assignment requirement (minimal dependencies)
+-  Full control over implementation
+-  Easier to understand and modify
+-  No black-box behavior
 
 ## Performance Characteristics
 
@@ -372,20 +372,20 @@ python analyze.py
 ## Security Considerations
 
 ### API Key Protection
-- ✅ Stored in `.env` (not committed)
-- ✅ `.gitignore` excludes `.env`
-- ✅ `.env.example` for template
-- ✅ `load_dotenv()` for loading
+-  Stored in `.env` (not committed)
+-  `.gitignore` excludes `.env`
+-  `.env.example` for template
+-  `load_dotenv()` for loading
 
 ### Code Execution
-- ⚠️ Agent can modify files in temp_repos/
-- ⚠️ No sandboxing implemented
-- ⚠️ Runs with user permissions
+-  Agent can modify files in temp_repos/
+-  No sandboxing implemented
+-  Runs with user permissions
 
 ### Data Privacy
-- ✅ All data local (no external storage)
-- ✅ Database not shared
-- ✅ API calls to OpenAI only
+-  All data local (no external storage)
+-  Database not shared
+-  API calls to OpenAI only
 
 ## Future Improvements
 
@@ -398,10 +398,10 @@ python analyze.py
 6. **Advanced Metrics**: Add time-based, cost-based metrics
 
 ### Not Implemented (By Design)
-- ❌ MCTS (not baseline)
-- ❌ Value Agent (not baseline)
-- ❌ Discriminator (not baseline)
-- ❌ Multi-agent debate (not baseline)
+-  MCTS (not baseline)
+-  Value Agent (not baseline)
+-  Discriminator (not baseline)
+-  Multi-agent debate (not baseline)
 
 ---
 
