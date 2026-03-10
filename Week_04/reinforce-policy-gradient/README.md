@@ -2,6 +2,10 @@
 
 A minimal implementation of the **REINFORCE (Monte Carlo Policy Gradient)** algorithm using PyTorch and Gymnasium on `CartPole-v1`.
 
+## You can watch the presentation video here
+
+[Watch the Presentation Video](https://drive.google.com/drive/folders/1EUSgRLgZiaveTboK57QZczM_ueiP6dEi?usp=sharing)
+
 ## Project Structure
 
 - `reinforce_cartpole.py` — training script
