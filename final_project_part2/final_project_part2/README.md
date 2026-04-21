@@ -4,7 +4,7 @@ Phase-1 implementation for wrapping upstream AgentFlow benchmark execution and d
 
 ## Screenshots & Results
 
-[View project screenshots and results on Google Drive](https://drive.google.com/drive/folders/1DlgafHLtEdfCV1guVSdGHnbtii2SqvMU?usp=drive_link)
+[View project presentation video on Google Drive](https://drive.google.com/drive/folders/1DlgafHLtEdfCV1guVSdGHnbtii2SqvMU?usp=drive_link)
 
 
 ## Current Phase
